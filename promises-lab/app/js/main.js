@@ -18,40 +18,77 @@ limitations under the License.
 const app = (() => {
 
   function getImageName(country) {
-
     // create and return a promise
+    country = country.toLowerCase();
+    const promiseOfImagename = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (country === 'spain' || country === 'chile' || country === 'peru') {
+          resolve(country + '.png');
+        } else {
+          reject(Error('Did NOT recieve a valid country name, or at least its not in our list!'))
+        }
+      }, 1000);
+    });
+    console.log(promiseOfImagename);
+    return promiseOfImagename;
 
   }
 
   function isSpain(country) {
-
     // Optional - create and return a promise that resolves if input is "Spain"
-
+    const promiseOfIsSpain = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (country === 'spain') {
+          resolve('This country is Spain!');
+        } else {
+          reject(Error('This country is NOT Spain!'))
+        }
+      }, 1000);
+    });
+    console.log(promiseOfIsSpain);
+    return promiseOfIsSpain;
   }
 
   function flagChain(country) {
-
-    // use the promise
-
+    return getImageName(country)
+      .then(fetchFlag)
+      .then(processFlag)
+      .then(appendFlag)
+      .catch(logError);
   }
 
   function allFlags(promiseList) {
-
-    // use promise.all
-
+    return Promise.all(promiseList)
+      .catch(returnFalse);
   }
 
-
+  var promises = [
+    getImageName('Spain'),
+    getImageName('Chile'),
+    getImageName('Peru')
+  ];
   // call the allFlags function
-
+  allFlags(promises).then(function (result) {
+    console.log(result);
+  });
 
   // use Promise.race
+  const promise1 = new Promise((resolve, reject) => {
+    setTimeout(resolve, 500, 'one');
+  });
 
+  const promise2 = new Promise((resolve, reject) => {
+    setTimeout(resolve, 100, 'two');
+  });
+
+  Promise.race([promise1, promise2])
+    .then(logSuccess)
+    .catch(logError);
 
   /* Helper functions */
 
   function logSuccess(result) {
-    console.log('Success!:\n' + result);
+    console.log('Success!: ' + result);
   }
 
   function logError(err) {
